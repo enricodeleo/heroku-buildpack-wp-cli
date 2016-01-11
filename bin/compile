@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+set -e            # fail fast
+set -o pipefail   # don't ignore exit codes when piping output
+# set -x          # enable debugging
+
+# Configure directories
+build_dir=$1
+cache_dir=$2
+env_dir=$3
+
+if [ ! -f $2/wp-cli.phar ]; then
+    echo "No cached wp-cli phar found, downloading!"
+    curl https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar -o $2/wp-cli.phar
+fi
+
+echo "Installing wp-cli...."
+mkdir -p $1/.wpcli
+cp $2/wp-cli.phar $1/.wpcli/wp
+chmod +x $1/.wpcli/wp
+$1/.wpcli/wp --info
